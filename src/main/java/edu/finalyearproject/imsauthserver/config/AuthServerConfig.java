@@ -28,6 +28,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
     private String authCodeClientSecret;
 
     private static final String AUTHORIZATION_CODE = "authorization_code";
+    private static final String REFRESH_TOKEN = "refresh_token";
     private static final String READ = "read";
     private static final String WRITE = "write";
 
@@ -41,14 +42,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
     {
         // allowed clients configured in application.properties
         clients.inMemory()
-                .withClient("client1")
-                .secret("secret1")
-                .authorizedGrantTypes("password")
-                .scopes(READ)
-                .and()
-                .withClient("client2")
+                .withClient(authCodeClientID)
                 .secret(authCodeClientSecret)
-                .authorizedGrantTypes(AUTHORIZATION_CODE)
+                .authorizedGrantTypes(AUTHORIZATION_CODE, REFRESH_TOKEN)
                 .scopes(READ)
                 .autoApprove(true)
                 .redirectUris("http://localhost:3000/oauth_callback"); //specifies where the authorization server will redirect to after authorization
@@ -67,7 +63,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
 
     /**
      * Overridden method used to allow the endpoint 'oauth/check_token' to validate access tokens issued by the
-     * server.
+     * server. Endpoint to use for authentication specified in application.properties
      * @param oauthServer
      * @throws Exception
      */
