@@ -1,7 +1,9 @@
 package edu.finalyearproject.imsauthserver.config;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -9,6 +11,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 /**
  * Configuration class for creating a list of allowed clients to access authorization server, including which grant type
@@ -48,6 +53,21 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
                 .scopes(READ)
                 .autoApprove(true)
                 .redirectUris("http://localhost:3000/oauth_callback"); //specifies where the authorization server will redirect to after authorization
+//        clients.withClientDetails(cds());
+    }
+
+    @Bean
+    public TokenStore tokenStore()
+    {
+        return new JwtTokenStore(converter());
+    }
+
+    @Bean
+    public JwtAccessTokenConverter converter()
+    {
+        var converter = new JwtAccessTokenConverter();
+        converter.setSigningKey("secret");  //like a password auth server uses to sign tokens
+        return converter;
     }
 
     /**
@@ -58,7 +78,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception
     {
-        endpoints.authenticationManager(authenticationManager);
+        endpoints.authenticationManager(authenticationManager)
+                    .tokenStore(tokenStore())
+                    .accessTokenConverter(converter());
     }
 
     /**
@@ -72,4 +94,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
     {
         oauthServer.checkTokenAccess("isAuthenticated()");
     }
+
+//    @Bean
+//    public JPAClientDetailsService cds() {
+//        return new JPAClientDetailsService();
+//    }
 }
