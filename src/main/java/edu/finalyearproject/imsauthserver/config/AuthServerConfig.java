@@ -94,9 +94,4 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
     {
         oauthServer.checkTokenAccess("isAuthenticated()");
     }
-
-//    @Bean
-//    public JPAClientDetailsService cds() {
-//        return new JPAClientDetailsService();
-//    }
 }
