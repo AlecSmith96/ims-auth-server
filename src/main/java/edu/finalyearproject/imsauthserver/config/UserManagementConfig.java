@@ -30,12 +30,6 @@ public class UserManagementConfig extends WebSecurityConfigurerAdapter {
     @Value("${client.app.origin}")
     private String clientOrigin;
 
-    @Value("${resource.server.origin}")
-    private String resourceServerOrigin;
-
-    private static final String GET = "GET";
-    private static final String POST = "POST";
-
     /**
      * Adds custom UserDetailsService to the Spring context for the application.
      * @return UserDetailsService - Custome service for retrieving Users from the user database,
@@ -82,31 +76,18 @@ public class UserManagementConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception
     {
         http.csrf().disable();  // lesson 9 explanation, just to focus on CORS
-//        configureCors(http);
 
-        // use Spring Security login form to authenticate
-        http.formLogin()/*.loginProcessingUrl("/login")*/;
-//                        .defaultSuccessUrl("http://localhost:3000/oauth_callback",true);
-
-        // forces any request to be authenticated
-        http.authorizeRequests().antMatchers("/login*").permitAll()
-                .anyRequest().authenticated();
+        http.formLogin()                            // use Spring Security login form to authenticate
+                .and()
+                .logout()                           // allow logout of user
+                .logoutSuccessUrl(clientOrigin)     // redirect to client app after logout
+                .and()
+                .authorizeRequests()
+                .antMatchers("/login*")
+                .permitAll()                        // allow unauthenticated access to '/login'
+                .anyRequest().authenticated();      // force authentication for all other requests
     }
 
-//    private void configureCors(HttpSecurity http) throws Exception
-//    {
-//        http.cors(customizer -> {   // configures allowed origins and allowed request types
-//            CorsConfigurationSource cs = request -> {
-//                CorsConfiguration configuration = new CorsConfiguration();
-//                configuration.setAllowedOrigins(List.of("*"));
-//                configuration.setAllowedMethods(List.of("*"));
-//                configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-//                configuration.setAllowCredentials(true);
-//                return configuration;
-//            };
-//            customizer.configurationSource(cs);
-//        });
-//    }
 
     @Bean
     public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
