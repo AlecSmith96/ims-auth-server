@@ -26,7 +26,9 @@ public class JPAUserDetailsService implements org.springframework.security.core.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        Optional<User> user = userRepository.findUserByUsername(username);
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        System.out.println(passwordEncoder.encode("1234"));
+        Optional<User> user = userRepository.findByUsernameIgnoreCase(username);
         User u = user.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return new SecurityUser(u);

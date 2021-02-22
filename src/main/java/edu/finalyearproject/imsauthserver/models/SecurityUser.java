@@ -21,11 +21,7 @@ public class SecurityUser implements UserDetails
         this.user = user;
     }
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities()
-//    {
-//        return List.of(() -> "read");
-//    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
