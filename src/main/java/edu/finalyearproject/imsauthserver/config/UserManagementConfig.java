@@ -83,7 +83,7 @@ public class UserManagementConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl(clientOrigin)     // redirect to client app after logout
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login*")
+                .antMatchers("/login*", "/users/**")
                 .permitAll()                        // allow unauthenticated access to '/login'
                 .anyRequest().authenticated();      // force authentication for all other requests
     }
