@@ -74,7 +74,6 @@ public class AuthController
     @PostMapping("/users/password-reset/{id}")
     public void resetPasswordForUser(@PathVariable int id)
     {
-        log.info("Entered");
         String password = passwordEncoder.encode("password");
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent())
@@ -89,8 +88,8 @@ public class AuthController
     @PostMapping("/users/update-details/{id}")
     public void updateUserDetails(@PathVariable int id, @RequestBody UserRequest userRequest)
     {
-        log.info(userRequest.toString());
         Optional<User> user = userRepository.findById(id);
+        log.info("Updating "+ user.get().getUsername() +"'s details...");
         Optional<Role> role = roleRepository.findBynameIgnoreCase(userRequest.getRole());
         Set<Role> roles = new HashSet<>();
         role.ifPresent(roles::add);
