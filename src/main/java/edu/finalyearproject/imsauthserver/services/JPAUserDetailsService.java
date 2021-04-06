@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) Alec R. C. Smith - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alec Smith <alec.smith@uea.ac.uk>, 2020-2021
+ */
 package edu.finalyearproject.imsauthserver.services;
 
 import edu.finalyearproject.imsauthserver.models.SecurityUser;
@@ -26,8 +32,6 @@ public class JPAUserDetailsService implements org.springframework.security.core.
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-//        System.out.println(passwordEncoder.encode("1234"));
         Optional<User> user = userRepository.findByUsernameIgnoreCase(username);
         User u = user.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 

@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) Alec R. C. Smith - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alec Smith <alec.smith@uea.ac.uk>, 2020-2021
+ */
 package edu.finalyearproject.imsauthserver.repositories;
 
 import edu.finalyearproject.imsauthserver.models.Role;
@@ -6,6 +12,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * JPA Repository to perform auto-generated queries on the Role table in the database.
+ */
 public interface RoleRepository extends JpaRepository<Role, Integer>
 {
         /**

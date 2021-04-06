@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) Alec R. C. Smith - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alec Smith <alec.smith@uea.ac.uk>, 2020-2021
+ */
 package edu.finalyearproject.imsauthserver.config;
 
 
@@ -35,7 +41,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
     private static final String AUTHORIZATION_CODE = "authorization_code";
     private static final String REFRESH_TOKEN = "refresh_token";
     private static final String READ = "read";
-    private static final String WRITE = "write";
+    private static final String SECRET = "secret";
 
     /**
      * Overridden method used to specify clients that are allowed to access the resource server.
@@ -53,20 +59,27 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter
                 .scopes(READ)
                 .autoApprove(true)
                 .redirectUris("http://localhost:3000/oauth_callback"); //specifies where the authorization server will redirect to after authorization
-//        clients.withClientDetails(cds());
     }
 
+    /**
+     * Config method to create Bean to store JWT tokens issued by the server.
+     * @return TokenStore - the Bean storing all JWT tokens issued.
+     */
     @Bean
     public TokenStore tokenStore()
     {
         return new JwtTokenStore(converter());
     }
 
+    /**
+     * Config method to create token converter to sign all JWT tokens with the servers secret.
+     * @return JwtAccessTokenConverter - Bean used to sign JWT tokens with servers secret.
+     */
     @Bean
     public JwtAccessTokenConverter converter()
     {
         var converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("secret");  //like a password auth server uses to sign tokens
+        converter.setSigningKey(SECRET);  //like a password auth server uses to sign tokens
         return converter;
     }
 

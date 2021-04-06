@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) Alec R. C. Smith - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Alec Smith <alec.smith@uea.ac.uk>, 2020-2021
+ */
 package edu.finalyearproject.imsauthserver.config;
 
 import edu.finalyearproject.imsauthserver.services.JPAUserDetailsService;
@@ -51,6 +57,11 @@ public class UserManagementConfig extends WebSecurityConfigurerAdapter {
 //        return NoOpPasswordEncoder.getInstance();         //used for testing, provides no encryption
     }
 
+    /**
+     * Config method to set the AuthenticationManager for the server.
+     * @return AuthenticationManager - the authentication manager for the server.
+     * @throws Exception
+     */
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception
@@ -58,6 +69,11 @@ public class UserManagementConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    /**
+     * Config method for configuring WebSecurity options.
+     * @param web - the WebSecurity object,
+     * @throws Exception
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web
@@ -66,10 +82,8 @@ public class UserManagementConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * Configures the OAuth login page.
-     * Can be overriden for custom login page:
-     * https://docs.spring.io/spring-security/site/docs/5.0.7.RELEASE/reference/html/oauth2login-advanced.html#:~:text=By%20default%2C%20the%20OAuth%202.0,(or%20OAuth%202.0%20Login).
-     * @param http
+     * Configuration method for configuring security settings for all HTTP requests.
+     * @param http - the HttpSecurity object.
      * @throws Exception
      */
     @Override
@@ -88,13 +102,16 @@ public class UserManagementConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();      // force authentication for all other requests
     }
 
-
+    /**
+     * Config method for setting up the CORS filter for the server.
+     * @return FilterRegistrationBean<CorsFilter> - the CORS filter.
+     */
     @Bean
     public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("*"));         // This needs to only allow react app and resource server
+        config.setAllowedOrigins(List.of("*"));
         config.setAllowedMethods(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
         source.registerCorsConfiguration("/**", config);
