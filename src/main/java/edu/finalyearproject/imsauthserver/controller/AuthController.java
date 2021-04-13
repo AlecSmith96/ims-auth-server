@@ -46,7 +46,7 @@ public class AuthController
      * @param userRequest - object containing new users credentials.
      */
     @PostMapping("/users/add")
-    public void createUser(@RequestBody UserRequest userRequest)
+    public User createUser(@RequestBody UserRequest userRequest)
     {
         log.info("Adding user '"+userRequest.getUsername()+"' to database...");
         Optional<Role> role = roleRepository.findBynameIgnoreCase(userRequest.getRole());
@@ -59,6 +59,7 @@ public class AuthController
         User user = new User(userRequest.getUsername(), userRequest.getEmail(),
                                                             passwordEncoder.encode(userRequest.getPassword()), roles);
         userRepository.save(user);
+        return user;
     }
 
     /**
@@ -88,7 +89,7 @@ public class AuthController
      * @param id - the id of the User to reset the password of.
      */
     @PostMapping("/users/password-reset/{id}")
-    public void resetPasswordForUser(@PathVariable int id)
+    public User resetPasswordForUser(@PathVariable int id)
     {
         String password = passwordEncoder.encode(DEFAULT_PASSWORD);
         Optional<User> user = userRepository.findById(id);
@@ -98,7 +99,9 @@ public class AuthController
             User returnedUser = user.get();
             returnedUser.setPassword(password);
             userRepository.save(returnedUser);
+            return returnedUser;
         }
+        return new User();
     }
 
     /**
@@ -107,22 +110,25 @@ public class AuthController
      * @param userRequest - the updated User details.
      */
     @PostMapping("/users/update-details/{id}")
-    public void updateUserDetails(@PathVariable int id, @RequestBody UserRequest userRequest)
+    public User updateUserDetails(@PathVariable int id, @RequestBody UserRequest userRequest)
     {
         Optional<User> user = userRepository.findById(id);
-        log.info("Updating "+ user.get().getUsername() +"'s details...");
         Optional<Role> role = roleRepository.findBynameIgnoreCase(userRequest.getRole());
         Set<Role> roles = new HashSet<>();
         role.ifPresent(roles::add);
 
         if (user.isPresent())
         {
+            log.info("Updating "+ user.get().getUsername() +"'s details...");
             User updatedUser = user.get();
             updatedUser.setUsername(userRequest.getUsername());
             updatedUser.setEmail(userRequest.getEmail());
             updatedUser.setRoles(roles);
             userRepository.save(updatedUser);
+            return updatedUser;
         }
+
+        return new User();
     }
 
     /**
@@ -131,7 +137,7 @@ public class AuthController
      * @param password - the new password to change to.
      */
     @PostMapping("/users/password-change/{username}")
-    public void updateUserPassword(@PathVariable String username, @RequestBody String password)
+    public User updateUserPassword(@PathVariable String username, @RequestBody String password)
     {
         log.info("Updating password for "+username+"...");
 
@@ -142,6 +148,9 @@ public class AuthController
             User foundUser = user.get();
             foundUser.setPassword(encodedPassword);
             userRepository.save(foundUser);
+            return foundUser;
         }
+
+        return new User();
     }
 }

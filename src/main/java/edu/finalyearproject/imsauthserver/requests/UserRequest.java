@@ -6,12 +6,16 @@
  */
 package edu.finalyearproject.imsauthserver.requests;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Wrapper class containing form data to update a Users account details.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRequest
 {
     private String username;
